@@ -1,0 +1,18 @@
+{
+    "glossary": {
+		"vdvbehbv": {
+            		"value" : 15
+        }
+    }, 
+    "some_array": [
+        true, 
+        false, 
+        null,
+        1, 
+        122, 
+        42,
+        {
+            "array_inside_field": "str"
+        }
+    ]
+}

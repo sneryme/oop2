@@ -1,18 +1,21 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "region.h"
-#include "model.h"
-#include "read_file.h"
+
+#include <QMainWindow>
 #include <QFileDialog>
 #include <QString>
-#include <QMessageBox>
-#include <QMainWindow>
-#include "sort.h"
+#include <memory>
+#include <string>
+#include "syntaxvalidator.h"
+#include "entrypoint.h"
+
+using std::shared_ptr;
+using std::make_shared;
+using std::string;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-using namespace std;
 
 class MainWindow : public QMainWindow
 {
@@ -23,14 +26,19 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_create_table_clicked();
-    void on_btn_check_stolb_clicked();
+
+    void on_openFile_clicked();
+
+    void reValidate(bool setOnErr);
+
+    void on_textBrowser_textChanged();
+
+    void on_save_clicked();
+
+    void on_setOnErr_clicked();
 
 private:
-    QList<Region>* list;
-    read_file* rfile;
-    Sort* ssort;
-    Model *model;
     Ui::MainWindow *ui;
+    entryPoint pnt;
 };
 #endif // MAINWINDOW_H

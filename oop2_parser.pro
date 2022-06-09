@@ -9,19 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    entrypoint.cpp \
     main.cpp \
     mainwindow.cpp \
-    model.cpp \
-    read_file.cpp \
-    region.cpp \
-    sort.cpp
+    syntaxvalidator.cpp \
+    textfilemanager.cpp \
+    validateResult.cpp
 
 HEADERS += \
+    entrypoint.h \
+    error.h \
     mainwindow.h \
-    model.h \
-    read_file.h \
-    region.h \
-    sort.h
+    syntaxvalidator.h \
+    textfilemanager.h
 
 FORMS += \
     mainwindow.ui

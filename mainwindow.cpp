@@ -1,57 +1,83 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QString>
 #include <QMessageBox>
-
+#include "error.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    list = new QList<Region>;
     ui->setupUi(this);
-
 }
 
 MainWindow::~MainWindow()
 {
-    delete model;
-    delete list;
     delete ui;
 }
 
 
-void MainWindow::on_create_table_clicked()
+
+void MainWindow::reValidate(bool setOnErr)
 {
-    QString file_path;
-    if (ui->line_region->text() != ""){
-        if (ui->line_file_pass->text()=="")
-            file_path = QFileDialog::getOpenFileName(this,tr("Открыть файл"),"C://","all files(*.*);;text file(*.txt);;table file(*.csv)");
-        else
-            file_path = ui->line_file_pass->text();
-        QMessageBox::information(this,tr("информация"),file_path);
-        rfile = new read_file(file_path.toStdString(), ui->line_region->text().toStdString(), list);
-        int check = rfile->Read_file();
-        (check == -1) ? QMessageBox::critical(this, "информация","не удалось открыть файл"):QMessageBox::information(this, "информация","удалось открыть файл");
-        model =new Model();
-        model->populate(list);
-        ui->tableView->setModel(model);
-    }else
-        QMessageBox::critical(this, "информация","не введён регион");
+    try{
+
+    auto pStr = make_shared<string>(ui->textBrowser->toPlainText().toStdString());
+    auto rez = pnt.validate(pStr);
+    if(!rez){
+        ui->validateRez->setText(QString::fromStdString(rez.what()));
+        if(setOnErr){
+            ui->textBrowser->moveCursor(QTextCursor::Start);
+            QTextCursor curs = ui->textBrowser->textCursor();
+            curs.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, rez.whatStr() - 1);
+            curs.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, rez.whatChar() - 1);
+            ui->textBrowser->setTextCursor(curs);
+        }
+
+    } else
+        ui->validateRez->setText("JSON is valid");
+    } catch(exception& ex) {QMessageBox::critical(this, "Error", ex.what());}
 }
 
-void MainWindow::on_btn_check_stolb_clicked()
+void MainWindow::on_openFile_clicked()
 {
-    if (ui->line_stolb->text() != ""){
-        ssort = new Sort();
-        ssort->read_stolb(ui->line_stolb->text(),list);
-        if (ssort->getMax()==-1 && ssort->getMin()==-1 && ssort->getMedian()==-1 )
-            QMessageBox::critical(this, "информация","не коректные данные");
-        else
-            ui->lbl_output->setText(QString("min: ") + QString::number(ssort->getMin())+
-                                    QString(" max: ") + QString::number(ssort->getMax())+
-                                    QString(" mediana: ") + QString::number(ssort->getMedian())
-                                    );
-    }else
-        QMessageBox::critical(this, "информация","введите данные");
+    QString fileName = QFileDialog:: getOpenFileName(this, tr("Open File"), "/Users/dmitriiostrometskii/Documents/labs/oop2_parser", "JSON File (*.json)");
+    shared_ptr<string> pStr;
+    ui->filePath->setText(fileName);
+    if(!fileName.isEmpty()) {
+        try{
+            pnt.setFile(fileName.toStdString());
+            pStr = pnt.getDataFromFile();
+        } catch(exception& ex) {QMessageBox::critical(this, "Error", ex.what());}
+
+        ui->textBrowser->setText(QString::fromStdString(*pStr));
+        ui->textBrowser->setReadOnly(false);
+    }
+}
+
+void MainWindow::on_textBrowser_textChanged()
+{
+    try{
+        reValidate(false);
+    } catch(exception& er){QMessageBox::critical(this, "Error", er.what());}
+}
+
+
+void MainWindow::on_save_clicked()
+{
+    try{
+        if(pnt.isFileSet()){
+            auto pStr = make_shared<string>(ui->textBrowser->toPlainText().toStdString());
+            pnt.reWriteFile(pStr);
+        }
+    } catch(exception& er){QMessageBox::critical(this, "Error", er.what());}
+}
+
+
+
+
+void MainWindow::on_setOnErr_clicked()
+{
+    reValidate(true);
 }
 
