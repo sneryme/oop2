@@ -28,13 +28,8 @@ public:
 private slots:
 
     void on_openFile_clicked();
-
-    void reValidate(bool setOnErr);
-
     void on_textBrowser_textChanged();
-
     void on_save_clicked();
-
     void on_setOnErr_clicked();
 
 private:

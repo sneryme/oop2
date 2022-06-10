@@ -29,3 +29,4 @@ shared_ptr<string> TextFileManager::getDataFromFile()
     return str;
 }
 
+

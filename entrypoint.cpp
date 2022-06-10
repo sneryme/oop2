@@ -30,6 +30,8 @@ syntaxValidator::validateResult entryPoint::validate(shared_ptr<string> str)
     return val.validate();
 }
 
+
+
 bool entryPoint::isFileSet()
 {
     if(!!mngr)

@@ -17,28 +17,6 @@ MainWindow::~MainWindow()
 }
 
 
-
-void MainWindow::reValidate(bool setOnErr)
-{
-    try{
-
-    auto pStr = make_shared<string>(ui->textBrowser->toPlainText().toStdString());
-    auto rez = pnt.validate(pStr);
-    if(!rez){
-        ui->validateRez->setText(QString::fromStdString(rez.what()));
-        if(setOnErr){
-            ui->textBrowser->moveCursor(QTextCursor::Start);
-            QTextCursor curs = ui->textBrowser->textCursor();
-            curs.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, rez.whatStr() - 1);
-            curs.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, rez.whatChar() - 1);
-            ui->textBrowser->setTextCursor(curs);
-        }
-
-    } else
-        ui->validateRez->setText("JSON is valid");
-    } catch(exception& ex) {QMessageBox::critical(this, "Error", ex.what());}
-}
-
 void MainWindow::on_openFile_clicked()
 {
     QString fileName = QFileDialog:: getOpenFileName(this, tr("Open File"), "/Users/dmitriiostrometskii/Documents/labs/oop2_parser", "JSON File (*.json)");
@@ -55,20 +33,16 @@ void MainWindow::on_openFile_clicked()
     }
 }
 
-void MainWindow::on_textBrowser_textChanged()
-{
-    try{
-        reValidate(false);
-    } catch(exception& er){QMessageBox::critical(this, "Error", er.what());}
-}
-
-
-
-
-
-
 void MainWindow::on_setOnErr_clicked()
 {
-    reValidate(true);
+    try{
+
+    auto pStr = make_shared<string>(ui->textBrowser->toPlainText().toStdString());
+    auto rez = pnt.validate(pStr);
+    if(!rez){
+        ui->validateRez->setText(QString::fromStdString(rez.what()));
+    } else
+        ui->validateRez->setText("JSON is valid");
+    } catch(exception& ex) {QMessageBox::critical(this, "Error", ex.what());}
 }
 
