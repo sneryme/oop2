@@ -29,17 +29,3 @@ shared_ptr<string> TextFileManager::getDataFromFile()
     return str;
 }
 
-void TextFileManager::rewriteFile(shared_ptr<string> pStr)
-{
-    ofstream file;
-    int len = pStr->size();
-    file.open(fileWay);
-    if(!file.is_open())
-        throw FileOpenError();
-    try {
-        file << *pStr;
-        filesystem::resize_file(fileWay, len);
-    } catch(exception& ex){
-        throw FileWriteError();
-    }
-}

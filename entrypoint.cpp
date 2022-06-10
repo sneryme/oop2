@@ -30,11 +30,6 @@ syntaxValidator::validateResult entryPoint::validate(shared_ptr<string> str)
     return val.validate();
 }
 
-void entryPoint::reWriteFile(shared_ptr<string> str)
-{
-    mngr->rewriteFile(str);
-}
-
 bool entryPoint::isFileSet()
 {
     if(!!mngr)

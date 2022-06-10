@@ -63,15 +63,6 @@ void MainWindow::on_textBrowser_textChanged()
 }
 
 
-void MainWindow::on_save_clicked()
-{
-    try{
-        if(pnt.isFileSet()){
-            auto pStr = make_shared<string>(ui->textBrowser->toPlainText().toStdString());
-            pnt.reWriteFile(pStr);
-        }
-    } catch(exception& er){QMessageBox::critical(this, "Error", er.what());}
-}
 
 
 
